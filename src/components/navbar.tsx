@@ -10,6 +10,7 @@ import {
 import { DATA } from "@/data/resume";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
+import { DiscordStatusPill } from "./discord_pill";
 
 export default function Navbar() {
   return (
@@ -59,7 +60,13 @@ export default function Navbar() {
               </Tooltip>
             </DockIcon>
           ))}
-        <Separator orientation="vertical" className="h-full py-2" />
+        <Separator orientation="vertical" className="h-full py-2 mr-2" />
+
+        {/* Discord Status Pill - using a flexible container */}
+        <div className="flex items-center justify-center min-w-[40px] max-w-[200px]">
+          <DiscordStatusPill />
+        </div>
+
         <DockIcon>
           <Tooltip>
             <TooltipTrigger asChild>
