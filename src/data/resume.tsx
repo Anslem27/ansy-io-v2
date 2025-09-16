@@ -6,9 +6,9 @@ export const DATA = {
   initials: "SA",
   url: "https://ansy-io.vercel.app",
   location: "Somehwere in Africa, UG",
-  locationLink: "https://www.google.com/maps/place/sanfrancisco",
+  locationLink: "https://www.google.com/maps/place/kampala",
   description:
-    "Casual Gamer ( Redditor / Developer / Writer )",
+    "Casual Gamer ( Redditor / Developer / Writer / Cat Lover )",
   summary:
     "I am a software developer with a passion for creating digital solutions and stunning UIs. I specialize in mobile app development, from basic planning and design to solving real-life problems with code . Offline, I enjoy listening to indie alternative music. I also write articles about coding and other topics on [medium](https://medium.com/@anslemAnsy).",
   avatarUrl: "/me.jpeg",

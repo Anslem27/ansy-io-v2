@@ -12,82 +12,14 @@ import {
 } from '@/components/ui/tooltip';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
-    MessageCircle,
-    Music,
     Gamepad2,
     Code2,
-    Activity,
-    Headphones,
-    ChevronRight
+    Activity
 } from 'lucide-react';
 import { DiscordLogoIcon } from '@radix-ui/react-icons';
+import { LanyardActivity, LanyardSWRResponse } from '@/lib/types/types';
+import SpotifyLogo from './spotify_logo';
 
-// Custom Spotify icon
-const SpotifyIcon: React.FC<{ size?: number; className?: string }> = ({
-    size = 16,
-    className = ""
-}) => (
-    <svg
-        width={size}
-        height={size}
-        viewBox="0 0 24 24"
-        fill="currentColor"
-        className={className}
-    >
-        <path d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zm4.062 14.455c-.155.255-.49.335-.744.18-2.04-1.245-4.606-1.526-7.634-.84-.292.066-.583-.118-.65-.41-.066-.292.118-.583.41-.65 3.317-.75 6.157-.427 8.374.975.254.155.335.49.18.744l.064.001zm1.064-2.368c-.196.32-.612.42-.932.224-2.336-1.437-5.892-1.854-8.656-1.015-.363.11-.745-.098-.855-.461-.11-.363.098-.745.461-.855 3.152-.958 7.09-.494 9.758 1.175.32.196.42.612.224.932zm.092-2.467C14.898 9.92 8.845 9.664 5.157 10.978c-.431.154-.905-.07-1.059-.501-.154-.431.07-.905.501-1.059 4.255-1.517 10.956-1.225 14.44 1.44.378.289.454.826.165 1.204-.289.378-.826.454-1.204.165l.018.003z" />
-    </svg>
-);
-
-// Types (simplified from your original)
-interface LanyardUser {
-    id: string;
-    username: string;
-    display_name?: string;
-    avatar?: string;
-    discriminator: string;
-}
-
-interface LanyardActivity {
-    id: string;
-    name: string;
-    type: number;
-    state?: string;
-    details?: string;
-    assets?: {
-        large_image?: string;
-        large_text?: string;
-        small_image?: string;
-        small_text?: string;
-    };
-    application_id?: string;
-    url?: string;
-}
-
-interface LanyardSpotify {
-    track_id: string;
-    timestamps: {
-        start: number;
-        end: number;
-    };
-    album: string;
-    album_art_url: string;
-    artist: string;
-    song: string;
-}
-
-interface LanyardData {
-    discord_user: LanyardUser;
-    listening_to_spotify: boolean;
-    spotify?: LanyardSpotify;
-    activities: LanyardActivity[];
-    discord_status: 'online' | 'idle' | 'dnd' | 'offline';
-}
-
-interface LanyardResponse {
-    data: LanyardData;
-    isValidating: boolean;
-    error?: any;
-}
 
 // Status colors
 const statusColors = {
@@ -114,7 +46,7 @@ const getActivityInfo = (activity: LanyardActivity) => {
         return {
             type: 'music',
             color: '#1DB954',
-            icon: SpotifyIcon,
+            icon: SpotifyLogo,
             label: 'Listening'
         };
     }
@@ -127,7 +59,7 @@ const getActivityInfo = (activity: LanyardActivity) => {
     };
 };
 
-// Animated wave bars for music
+
 const WaveBars: React.FC<{ color?: string }> = ({ color = "#1DB954" }) => (
     <div className="flex items-end justify-center gap-0.5 h-3">
         {[1, 2, 3].map((i) => (
@@ -149,13 +81,12 @@ const WaveBars: React.FC<{ color?: string }> = ({ color = "#1DB954" }) => (
     </div>
 );
 
-// Main Discord Status Pill Component
 export const DiscordStatusPill: React.FC = () => {
     const [isExpanded, setIsExpanded] = useState(false);
 
     const lanyard = useLanyard({
         userId: "878728452155539537",
-    }) as LanyardResponse;
+    }) as LanyardSWRResponse;
 
     // Loading state
     if (lanyard.isValidating && !lanyard.data) {
@@ -170,7 +101,6 @@ export const DiscordStatusPill: React.FC = () => {
         );
     }
 
-    // Error or no data
     if (!lanyard.data?.data?.discord_user) {
         return (
             <motion.div className="h-10 w-10 bg-muted/50 rounded-full flex items-center justify-center">
@@ -198,7 +128,7 @@ export const DiscordStatusPill: React.FC = () => {
         activityInfo = {
             type: 'music',
             color: '#1DB954',
-            icon: SpotifyIcon,
+            icon: SpotifyLogo,
             label: 'Listening'
         };
     } else if (activities.length > 0) {

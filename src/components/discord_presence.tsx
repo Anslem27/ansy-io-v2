@@ -16,10 +16,7 @@ import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Skeleton } from '@/components/ui/skeleton';
 import {
-    Loader2,
     MessageCircle,
-    Music,
-    Play,
     Apple,
     Youtube,
     Gamepad2,
@@ -30,97 +27,16 @@ import {
     Headphones
 } from 'lucide-react';
 import { DiscordLogoIcon } from '@radix-ui/react-icons';
+import { LanyardActivity, LanyardData, LanyardSWRResponse, MusicData, MusicPlatform } from '@/lib/types/types';
+import SpotifyLogo from './spotify_logo';
+import { Icons } from './icons';
 
-const SpotifyIcon: React.FC<{ size?: number; className?: string }> = ({
-    size = 20,
-    className = ""
-}) => (
-    <svg
-        width={size}
-        height={size}
-        viewBox="0 0 24 24"
-        fill="currentColor"
-        className={className}
-    >
-        <path d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zm4.062 14.455c-.155.255-.49.335-.744.18-2.04-1.245-4.606-1.526-7.634-.84-.292.066-.583-.118-.65-.41-.066-.292.118-.583.41-.65 3.317-.75 6.157-.427 8.374.975.254.155.335.49.18.744l.064.001zm1.064-2.368c-.196.32-.612.42-.932.224-2.336-1.437-5.892-1.854-8.656-1.015-.363.11-.745-.098-.855-.461-.11-.363.098-.745.461-.855 3.152-.958 7.09-.494 9.758 1.175.32.196.42.612.224.932zm.092-2.467C14.898 9.92 8.845 9.664 5.157 10.978c-.431.154-.905-.07-1.059-.501-.154-.431.07-.905.501-1.059 4.255-1.517 10.956-1.225 14.44 1.44.378.289.454.826.165 1.204-.289.378-.826.454-1.204.165l.018.003z" />
-    </svg>
-);
 
-// Type definitions (keeping your existing ones)
-interface LanyardUser {
-    id: string;
-    username: string;
-    display_name?: string;
-    avatar?: string;
-    discriminator: string;
-    public_flags?: number;
-}
-
-interface LanyardActivity {
-    id: string;
-    name: string;
-    type: number;
-    state?: string;
-    details?: string;
-    timestamps?: {
-        start?: number;
-        end?: number;
-    };
-    assets?: {
-        large_image?: string;
-        large_text?: string;
-        small_image?: string;
-        small_text?: string;
-    };
-    application_id?: string;
-    url?: string;
-}
-
-interface LanyardSpotify {
-    track_id: string;
-    timestamps: {
-        start: number;
-        end: number;
-    };
-    album: string;
-    album_art_url: string;
-    artist: string;
-    song: string;
-}
-
-interface LanyardData {
-    discord_user: LanyardUser;
-    listening_to_spotify: boolean;
-    spotify?: LanyardSpotify;
-    activities: LanyardActivity[];
-    discord_status: 'online' | 'idle' | 'dnd' | 'offline';
-}
-
-interface LanyardResponse {
-    data: LanyardData;
-    isValidating: boolean;
-    error?: any;
-}
-
-interface MusicPlatform {
-    name: string;
-    color: string;
-    logo: React.ReactElement;
-    getUrl: (id: string) => string;
-}
-
-interface MusicData {
-    imageUrl?: string;
-    title: string;
-    artist: string;
-}
-
-// Enhanced platform configuration
 const musicPlatforms: Record<string, MusicPlatform> = {
     spotify: {
         name: "Spotify",
         color: "#1DB954",
-        logo: <SpotifyIcon />,
+        logo: <SpotifyLogo />,
         getUrl: (id: string) => `https://open.spotify.com/track/${id}`
     },
     apple: {
@@ -132,7 +48,7 @@ const musicPlatforms: Record<string, MusicPlatform> = {
     youtube: {
         name: "YouTube Music",
         color: "#FF0000",
-        logo: <Youtube fill="currentColor" />,
+        logo: <Icons.youtube className='size-5 mr-1' />,
         getUrl: (id: string) => `https://www.youtube.com/watch?v=${id}`
     }
 };
@@ -189,7 +105,6 @@ const WaveBars: React.FC<{ color?: string; size?: 'sm' | 'md' }> = ({
     );
 };
 
-// Loading skeleton component
 const ActivitySkeleton: React.FC = () => (
     <Card>
         <CardContent className="p-4">
@@ -217,13 +132,12 @@ const formatElapsedTime = (timestamp: number): string => {
     return `${minutes}m`;
 };
 
-// Main component
 const DiscordActivityStream: React.FC = () => {
     const [imageErrors, setImageErrors] = useState<Record<string, boolean>>({});
 
     const lanyard = useLanyard({
         userId: "878728452155539537",
-    }) as LanyardResponse;
+    }) as LanyardSWRResponse;
 
     const detectMusicPlatform = (data: LanyardData | null): string | null => {
         if (!data) return null;
@@ -256,7 +170,6 @@ const DiscordActivityStream: React.FC = () => {
         );
     }
 
-    // Error state
     if (!lanyard.data?.data?.discord_user) {
         return (
             <Card>
@@ -352,13 +265,13 @@ const DiscordActivityStream: React.FC = () => {
                                     <div className="flex items-center space-x-2">
                                         <Badge
                                             variant="secondary"
-                                            className="text-xs px-2 py-0.5"
+                                            className="text-xs px-2 py-0.1"
                                             style={{
                                                 backgroundColor: `${platformInfo.color}15`,
                                                 color: platformInfo.color
                                             }}
                                         >
-                                            <Headphones className="w-3 h-3 mr-1" />
+                                            {platformInfo.logo}
                                             {platformInfo.name}
                                         </Badge>
                                         <span className="text-sm font-medium text-foreground truncate">
