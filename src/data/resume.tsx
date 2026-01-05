@@ -65,14 +65,15 @@ export const DATA = {
       technologies: [
         "Flutter",
         "Dart",
+        "Firebase",
         "Provider",
         "Shared Prefs",
-        "Hive ce",
+        "Hive CE",
       ],
       links: [
         {
-          type: "Website",
-          href: "#",
+          type: "Google Play Store",
+          href: "https://play.google.com/store/apps/details?id=com.backlog.backlogr&hl=en-US",
           icon: <Icons.globe className="size-3" />,
         },
       ],
