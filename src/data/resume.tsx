@@ -76,6 +76,12 @@ export const DATA = {
           href: "https://play.google.com/store/apps/details?id=com.backlog.backlogr&hl=en-US",
           icon: <Icons.globe className="size-3" />,
         },
+        // website
+        {
+          type: "Website",
+          href: "https://www.backlogr.site/en/",
+          icon: <Icons.globe className="size-3" />,
+        },
       ],
       image: "/backlogr.png",
       video:
