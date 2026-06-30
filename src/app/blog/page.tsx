@@ -13,18 +13,21 @@ const BLUR_FADE_DELAY = 0.04;
 export default function BlogPage() {
   const [articles, setArticles] = useState<Article[]>([]);
   const [isLoadingMedium, setIsLoadingMedium] = useState<boolean>(true);
+  const [mediumError, setMediumError] = useState<boolean>(false);
 
-
-  // Fetch Medium articles
   useEffect(() => {
     fetch("https://api.rss2json.com/v1/api.json?rss_url=https://medium.com/feed/@anslemAnsy")
-      .then(res => res.json())
+      .then(res => {
+        if (!res.ok) throw new Error(`RSS fetch failed: ${res.status}`);
+        return res.json();
+      })
       .then((data: { items: Article[] }) => {
-        setArticles(data.items);
+        setArticles(data.items ?? []);
         setIsLoadingMedium(false);
       })
-      .catch((error) => {
-        console.error('Error fetching Medium articles:', error);
+      .catch((err) => {
+        console.error('Error fetching Medium articles:', err);
+        setMediumError(true);
         setIsLoadingMedium(false);
       });
   }, []);
@@ -56,7 +59,7 @@ export default function BlogPage() {
           <div className="flex justify-center items-center h-48">
             <Loader2 className="h-8 w-8 animate-spin" />
           </div>
-        ) : (
+        ) : mediumError ? null : (
           <div className="space-y-4">
             {articles.map((article, index) => (
               <BlurFade delay={BLUR_FADE_DELAY * 8 + index * 0.05} key={article.title}>
@@ -69,13 +72,6 @@ export default function BlogPage() {
           </div>
         )}
 
-        {!isLoadingMedium && articles.length === 0 && (
-          <BlurFade delay={BLUR_FADE_DELAY * 8}>
-            <p className="text-sm text-muted-foreground text-center py-8">
-              No Medium articles found at the moment.
-            </p>
-          </BlurFade>
-        )}
       </div>
     </section>
   );

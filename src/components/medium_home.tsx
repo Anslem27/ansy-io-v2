@@ -11,16 +11,21 @@ import { MediumGridItem } from './medium_card';
 const BlogSection: React.FC = () => {
     const [articles, setArticles] = useState<Article[]>([]);
     const [isLoading, setIsLoading] = useState<boolean>(true);
+    const [error, setError] = useState<boolean>(false);
 
     useEffect(() => {
         fetch("https://api.rss2json.com/v1/api.json?rss_url=https://medium.com/feed/@anslemAnsy")
-            .then(res => res.json())
+            .then(res => {
+                if (!res.ok) throw new Error(`RSS fetch failed: ${res.status}`);
+                return res.json();
+            })
             .then((data: { items: Article[] }) => {
-                setArticles(data.items);
+                setArticles(data.items ?? []);
                 setIsLoading(false);
             })
-            .catch((error) => {
-                console.error('Error fetching articles:', error);
+            .catch((err) => {
+                console.error('Error fetching articles:', err);
+                setError(true);
                 setIsLoading(false);
             });
     }, []);
@@ -35,7 +40,7 @@ const BlogSection: React.FC = () => {
                 <div className="flex justify-center items-center h-48">
                     <Loader2 className="h-8 w-8 animate-spin" />
                 </div>
-            ) : (
+            ) : error ? null : (
                 <div className="space-y-4">
                     {articles
                         .filter((_, index) => [1, 3, 6].includes(index))
